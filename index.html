@@ -114,15 +114,15 @@
         <section id="challenge" class="py-16 sm:py-20 bg-green-50/50">
             <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Nutritional Crucible of Early Lactation</h2>
-                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">In a pasture-based system, early lactation presents a critical challenge: a significant gap between the cow's energy needs and her intake, which high-protein grass alone cannot solve. This section outlines the core problem your supplementation strategy must address.</p>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">In a pasture-based system, early lactation presents a critical challenge: a significant gap between the cow's energy and protein needs and her intake, which high-protein grass alone cannot solve. This pathway outlines the core problem your supplementation strategy must address.</p>
                 <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
                     <div class="card p-8">
                         <h3 class="text-xl font-bold text-gray-900">The Physiological Imperative: Negative Energy Balance (NEB)</h3>
-                        <p class="mt-2 text-gray-600">Post-calving, milk production skyrockets, demanding more energy than the cow can physically consume. This forces her to mobilize body reserves, leading to weight loss and metabolic stress. Peak milk yield occurs at 6-8 weeks, but peak feed intake lags until 10-12 weeks, creating an unavoidable energy deficit that needs careful management.</p>
+                        <p class="mt-2 text-gray-600">Post-calving, milk production skyrockets, demanding more nutrients (energy and protein) than the cow can physically consume. This forces her to mobilize body reserves, leading to weight loss and metabolic stress. Peak milk yield occurs at 6-8 weeks post calving, but peak feed intake lags until 10-12 weeks, creating an unavoidable nutrient deficit that needs careful management.</p>
                     </div>
                     <div class="card p-8">
                         <h3 class="text-xl font-bold text-gray-900">The Pasture Paradox: High Protein, Limiting Energy</h3>
-                        <p class="mt-2 text-gray-600">Lush spring pasture is rich in crude protein but is primarily limited by its energy content. This imbalance leads to an excess of Rumen-Degradable Protein (RDP). The cow wastes energy converting this excess protein to urea for excretion, imposing a metabolic cost when she can least afford it and losing valuable nitrogen to the environment.</p>
+                        <p class="mt-2 text-gray-600">Lush spring pasture is rich in crude protein but is primarily limited by its energy content. This imbalance leads to an excess of Rumen-Degradable Protein (RDP). The cow must use energy converting this excess protein to urea for excretion, imposing a metabolic cost when she can least afford it and losing valuable nitrogen to the environment.</p>
                     </div>
                 </div>
             </div>
@@ -131,8 +131,8 @@
         <section id="science" class="py-16 sm:py-20">
             <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
-                    <p class="section-title">PROTEIN 101</p>
-                    <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Deconstructing Protein: From Crude to Metabolizable</h2>
+                    <p class="section-title">PROTEIN</p>
+                    <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Dietary Crude Protein to Metabolizable Protein</h2>
                     <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">A profitable strategy isn't about total protein; it's about delivering the *right kind* of protein. This interactive diagram shows how different protein fractions are used by the cow, highlighting the importance of balancing the diet.</p>
                 </div>
 
@@ -140,36 +140,20 @@
                     <div class="max-w-4xl mx-auto p-6 card">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mt-4">
                              <div class="text-center">
-                                <p class="font-semibold"> </p>
-                                <div class="text-5xl mt-2"> </div>
-                            </div>
-                             <div class="text-center">
                                 <div class="text-5xl mt-2">Dietary Intake</div>
                                 <div class="text-5xl mt-2">⬇️</div>
                             </div>
-                             <div class="text-center">
-                                <p class="font-semibold"></p>
-                                <div class="text-5xl mt-2"></div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mt-4">
-                            <div class="text-center">
-                                <p class="font-semibold">Dietary Intake</p>
-                                <div class="text-5xl mt-2">⬇️</div>
-                            </div>
-                            <div></div>
-                            <div></div>
                         </div>
                         <div class="cow-diagram-part mt-4 p-4">
                             <h4 class="text-lg font-bold">Rumen</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 <div class="bg-blue-100 p-3 rounded-lg">
                                     <h5 class="font-bold text-blue-800">Rumen-Degradable Protein (RDP)</h5>
-                                    <p class="text-sm text-blue-700">Feeds rumen microbes. Converted to high-quality microbial protein IF energy is available. Excess becomes waste.</p>
+                                    <p class="text-sm text-blue-700">Feeds rumen microbes. Converted to high-quality microbial protein when adequate energy is available. Excess becomes waste.</p>
                                 </div>
                                 <div class="bg-green-100 p-3 rounded-lg">
                                     <h5 class="font-bold text-green-800">Rumen-Undegradable Protein (RUP)</h5>
-                                    <p class="text-sm text-green-700">'Bypass' protein. Resists rumen breakdown, passing directly to the small intestine.</p>
+                                    <p class="text-sm text-green-700">'Bypass' protein. Resists rumen breakdown, passing directly to the small intestine for absorption.</p>
                                 </div>
                             </div>
                         </div>
@@ -314,6 +298,10 @@
 
             const supplementInfo = [
                 {
+                    title: 'Spring Ryegrass Pasture',
+                    description: 'Lush spring ryegrass is highly digestible and rich in Rumen-Degradable Protein (RDP), but is limited by energy content which can lead to inefficient nitrogen use and metabolic stress.',
+                    stats: {'Crude Protein': '24%', 'RUP': 'Very Low', 'Energy': '12.0 MJ ME'}
+                },{
                     title: 'Canola Meal',
                     description: 'High in bypass protein with a balanced amino acid profile. Excellent for supporting milk production while improving nitrogen efficiency (lower MUN).',
                     stats: {'Crude Protein': '38%', 'RUP': 'High', 'Energy': '13.0 MJ ME'}
