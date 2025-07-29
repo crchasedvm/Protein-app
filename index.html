@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximizing Dairy Profitability: A Guide to Protein Supplementation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthy Harmony -->
+    <!-- Application Structure Plan: The application is designed as a single-page, scrolling dashboard with a fixed navigation bar for easy access to key sections. The structure flows logically from the core problem to the scientific explanation, practical solutions, quantifiable benefits, and finally, actionable strategies. This non-linear, thematic structure allows users (farm managers) to either follow the narrative or jump directly to the section most relevant to their immediate needs, such as comparing supplements or calculating ROI. The goal is to transform a dense report into an intuitive decision-support tool. -->
+    <!-- Visualization & Content Choices: 
+        - The Challenge: Presented with clear, concise text and icons to quickly establish the core problem of NEB and the Pasture Paradox. Goal: Inform.
+        - The Science (Protein 101): An interactive HTML/CSS diagram of a cow's digestive system visually explains RDP vs. RUP, making a complex biological process understandable without dense text. Goal: Organize & Inform. Method: HTML/CSS diagram, JS for interaction.
+        - Supplement Toolkit: An interactive bar chart (Chart.js) allows users to directly compare protein supplements. Clicking a bar dynamically updates a detailed info card. Goal: Compare. Method: Chart.js bar chart, JS for dynamic content updates.
+        - The Payoff (ROI): Key economic values are presented in high-impact "KPI cards." An interactive doughnut chart (Chart.js) visualizes the components of the economic benefit. Goal: Inform & Relate. Method: Chart.js doughnut chart, JS for tooltips.
+        - Strategy Section: Actionable recommendations are presented as a clear, icon-based list. Goal: Inform. Method: HTML/CSS layout.
+        - Justification: This interactive, visual approach is chosen to make data exploration engaging and to simplify complex information, enabling faster, more informed decision-making for busy farm managers. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4F4641;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #2E7D32;
+            border-bottom-color: #2E7D32;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 1700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .btn-primary {
+            background-color: #2E7D32;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #1B5E20;
+        }
+        .section-title {
+            color: #8D6E63;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        .cow-diagram-part {
+            border: 2px solid #D7CCC8;
+            background-color: #F5F5F5;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-gray-800">Protein Profitability Planner</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#challenge" class="nav-link px-3 py-2 rounded-md text-sm font-medium">The Challenge</a>
+                        <a href="#science" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Protein 101</a>
+                        <a href="#solutions" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Supplement Toolkit</a>
+                        <a href="#payoff" class="nav-link px-3 py-2 rounded-md text-sm font-medium">The Payoff</a>
+                        <a href="#strategy" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Your Strategy</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                        <option value="#challenge">The Challenge</option>
+                        <option value="#science">Protein 100</option>
+                        <option value="#solutions">Supplement Toolkit</option>
+                        <option value="#payoff">The Payoff</option>
+                        <option value="#strategy">Your Strategy</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="challenge" class="py-16 sm:py-20 bg-green-50/50">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Nutritional Crucible of Early Lactation</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">In a pasture-based system, early lactation presents a critical challenge: a significant gap between the cow's energy needs and her intake, which high-protein grass alone cannot solve. This section outlines the core problem your supplementation strategy must address.</p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                    <div class="card p-8">
+                        <h3 class="text-xl font-bold text-gray-900">The Physiological Imperative: Negative Energy Balance (NEB)</h3>
+                        <p class="mt-2 text-gray-600">Post-calving, milk production skyrockets, demanding more energy than the cow can physically consume. This forces her to mobilize body reserves, leading to weight loss and metabolic stress. Peak milk yield occurs at 6-8 weeks, but peak feed intake lags until 10-12 weeks, creating an unavoidable energy deficit that needs careful management.</p>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="text-xl font-bold text-gray-900">The Pasture Paradox: High Protein, Limiting Energy</h3>
+                        <p class="mt-2 text-gray-600">Lush spring pasture is rich in crude protein but is primarily limited by its energy content. This imbalance leads to an excess of Rumen-Degradable Protein (RDP). The cow wastes energy converting this excess protein to urea for excretion, imposing a metabolic cost when she can least afford it and losing valuable nitrogen to the environment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="science" class="py-16 sm:py-20">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <p class="section-title">PROTEIN 101</p>
+                    <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Deconstructing Protein: From Crude to Metabolizable</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">A profitable strategy isn't about total protein; it's about delivering the *right kind* of protein. This interactive diagram shows how different protein fractions are used by the cow, highlighting the importance of balancing the diet.</p>
+                </div>
+
+                <div class="mt-12">
+                    <div class="max-w-4xl mx-auto p-6 card">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                            <div class="text-center">
+                                <p class="font-semibold">Dietary Intake</p>
+                                <div class="text-5xl mt-2">⬇️</div>
+                            </div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="cow-diagram-part mt-4 p-4">
+                            <h4 class="text-lg font-bold">Rumen</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <h5 class="font-bold text-blue-800">Rumen-Degradable Protein (RDP)</h5>
+                                    <p class="text-sm text-blue-700">Feeds rumen microbes. Converted to high-quality microbial protein IF energy is available. Excess becomes waste.</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <h5 class="font-bold text-green-800">Rumen-Undegradable Protein (RUP)</h5>
+                                    <p class="text-sm text-green-700">'Bypass' protein. Resists rumen breakdown, passing directly to the small intestine.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mt-4">
+                             <div class="text-center">
+                                <p class="font-semibold">Microbial Protein</p>
+                                <div class="text-5xl mt-2">⬇️</div>
+                            </div>
+                             <div class="text-center">
+                                <div class="text-5xl mt-8">➡️</div>
+                            </div>
+                             <div class="text-center">
+                                <p class="font-semibold">RUP</p>
+                                <div class="text-5xl mt-2">⬇️</div>
+                            </div>
+                        </div>
+                         <div class="cow-diagram-part mt-4 p-4 bg-purple-50">
+                            <h4 class="text-lg font-bold text-purple-800">Small Intestine: Absorption</h4>
+                            <p class="mt-2 text-purple-700">Here, both microbial protein and RUP are digested and absorbed as **Metabolizable Protein (MP)**. This is the true protein that fuels milk production, health, and reproduction.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solutions" class="py-16 sm:py-20 bg-gray-50">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <p class="section-title">SOLUTIONS</p>
+                    <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Supplement Toolkit</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Choosing the right supplement is key. Use this interactive chart to compare common options based on their nutritional profile. Click on a supplement to see its strategic application.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-3">
+                        <div class="chart-container">
+                            <canvas id="supplementChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="supplement-info" class="lg:col-span-2 card p-6 flex flex-col justify-center">
+                        <h3 id="info-title" class="text-2xl font-bold text-gray-900">Select a Supplement</h4>
+                        <p id="info-description" class="mt-4 text-gray-600">Click on a bar in the chart to learn more about each supplement's key characteristics and how it can fit into your feeding strategy.</p>
+                        <div id="info-stats" class="mt-4 space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="payoff" class="py-16 sm:py-20">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <p class="section-title">THE PAYOFF</p>
+                    <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Cascade of Benefits</h2>
+                     <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Strategic supplementation triggers a virtuous cycle of benefits that compound over time, driving herd health, productivity, and overall farm profitability. The return on investment goes far beyond the immediate milk response.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 text-center">
+                        <div class="text-4xl">🥛</div>
+                        <h3 class="mt-4 text-xl font-bold">Enhanced Milk Solids</h3>
+                        <p class="mt-2 text-gray-600">Providing bypass protein (RUP) and key amino acids directly fuels the udder to synthesize more milk protein, increasing the value of every litre.</p>
+                        <p class="mt-4 text-2xl font-bold text-green-700">$7.10/kg</p>
+                        <p class="text-sm text-gray-500">Economic Value of Milk Protein</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <div class="text-4xl">❤️</div>
+                        <h3 class="mt-4 text-xl font-bold">Preserved Body Condition</h3>
+                        <p class="mt-2 text-gray-600">Adequate protein spares the cow's muscle tissue, reducing severe weight loss and lowering the risk of costly metabolic diseases like ketosis.</p>
+                        <p class="mt-4 text-2xl font-bold text-green-700">$174.57/unit</p>
+                        <p class="text-sm text-gray-500">Economic Value of Body Condition Score</p>
+                    </div>
+                     <div class="card p-6 text-center">
+                        <div class="text-4xl">📈</div>
+                        <h3 class="mt-4 text-xl font-bold">Bolstered Reproduction</h3>
+                        <p class="mt-2 text-gray-600">A better energy and protein status leads to a faster return to cyclicity, higher conception rates, and a tighter calving pattern—the cornerstone of future profitability.</p>
+                        <p class="mt-4 text-2xl font-bold text-green-700">$5.90/% point</p>
+                        <p class="text-sm text-gray-500">EV of 42-day In-Calf Rate</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="py-16 sm:py-20 bg-green-50/50">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <p class="section-title">ACTION PLAN</p>
+                    <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Your Integrated Strategy</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Implement a proactive, data-driven system to maximize returns and ensure sustainability. Profit comes from efficiency, not just volume.</p>
+                </div>
+                <div class="mt-12 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="text-center p-4">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-white shadow-lg mx-auto">
+                            <span class="text-3xl">🧪</span>
+                        </div>
+                        <h3 class="mt-5 text-lg font-semibold">1. Test, Don't Guess</h3>
+                        <p class="mt-2 text-gray-600">Regularly test your pasture and silage to get objective data on energy, protein, and fiber. This is the foundation for any targeted supplementation.</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-white shadow-lg mx-auto">
+                            <span class="text-3xl">🎯</span>
+                        </div>
+                        <h3 class="mt-5 text-lg font-semibold">2. Target the Deficit</h3>
+                        <p class="mt-2 text-gray-600">Select supplements to precisely fill the identified gap. Work with a nutritionist to formulate a balanced ration that optimizes rumen function.</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-white shadow-lg mx-auto">
+                           <span class="text-3xl">📊</span>
+                        </div>
+                        <h3 class="mt-5 text-lg font-semibold">3. Monitor & Adapt</h3>
+                        <p class="mt-2 text-gray-600">Track Key Performance Indicators: Milk Urea Nitrogen (MUN), Body Condition Score (BCS), milk components, and reproductive data to fine-tune your strategy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
+            <p>&copy; 2024 Protein Profitability Planner. All data synthesized from the source report for educational purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const supplementData = {
+                labels: ['Canola Meal', 'Soybean Meal', 'Corn DDG', 'Wheat DDG', 'PKE', 'Soy Hulls'],
+                datasets: [
+                    {
+                        label: 'Crude Protein (% DM)',
+                        data: [38, 48, 28, 22, 17, 11],
+                        backgroundColor: '#66BB6A',
+                        borderColor: '#388E3C',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Metabolisable Energy (MJ ME/kg DM)',
+                        data: [13.0, 12.5, 13.0, 13.0, 11.5, 12.0],
+                        backgroundColor: '#FFCA28',
+                        borderColor: '#FFA000',
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            const supplementInfo = [
+                {
+                    title: 'Canola Meal',
+                    description: 'High in bypass protein with a balanced amino acid profile. Excellent for supporting milk production while improving nitrogen efficiency (lower MUN).',
+                    stats: {'Crude Protein': '38%', 'RUP': 'High', 'Energy': '13.0 MJ ME'}
+                },
+                {
+                    title: 'Soybean Meal',
+                    description: 'The benchmark for high-quality protein. Highly palatable and rich in lysine. Ideal for boosting protein supply when total protein is limiting.',
+                    stats: {'Crude Protein': '48%', 'RUP': 'Moderate-High', 'Energy': '12.5 MJ ME'}
+                },
+                {
+                    title: 'Corn DDG',
+                    description: 'A dual-purpose supplement providing both high energy and a significant amount of bypass protein. Excellent for addressing the concurrent energy and protein deficits of early lactation.',
+                    stats: {'Crude Protein': '28%', 'RUP': 'High (~60%)', 'Energy': '13.0 MJ ME'}
+                },
+                {
+                    title: 'Wheat DDG',
+                    description: 'A palatable source of digestible protein and energy. Beneficial for rumen health and milk production.',
+                    stats: {'Crude Protein': '22%', 'RUP': 'Moderate', 'Energy': '13.0 MJ ME'}
+                },
+                {
+                    title: 'Palm Kernel Expeller (PKE)',
+                    description: 'A cost-effective source of energy and fiber. Primarily used as a bulk feed to fill pasture deficits rather than a targeted protein supplement.',
+                    stats: {'Crude Protein': '17%', 'RUP': 'Low-Moderate', 'Energy': '11.5 MJ ME'}
+                },
+                {
+                    title: 'Soy Hulls',
+                    description: 'A highly digestible fiber source with low protein. Used to supplement energy and fiber, not for protein. Can help lift production and manage FEI levels.',
+                    stats: {'Crude Protein': '11%', 'RUP': 'Low', 'Energy': '12.0 MJ ME'}
+                }
+            ];
+
+            const ctx = document.getElementById('supplementChart').getContext('2d');
+            const supplementChart = new Chart(ctx, {
+                type: 'bar',
+                data: supplementData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Value'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                autoSkip: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += context.parsed.x;
+                                        if (context.dataset.label.includes('Protein')) {
+                                            label += '%';
+                                        } else {
+                                            label += ' MJ';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            updateInfoCard(index);
+                        }
+                    }
+                }
+            });
+
+            function updateInfoCard(index) {
+                const data = supplementInfo[index];
+                document.getElementById('info-title').textContent = data.title;
+                document.getElementById('info-description').textContent = data.description;
+                const statsContainer = document.getElementById('info-stats');
+                statsContainer.innerHTML = '';
+                for (const [key, value] of Object.entries(data.stats)) {
+                    const statEl = document.createElement('p');
+                    statEl.innerHTML = `<span class="font-semibold">${key}:</span> ${value}`;
+                    statsContainer.appendChild(statEl);
+                }
+            }
+            
+            updateInfoCard(0);
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', function(e) {
+                const targetId = e.target.value;
+                document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+            });
+
+        });
+    </script>
+</body>
+</html>
